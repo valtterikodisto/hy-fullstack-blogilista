@@ -50,6 +50,34 @@ test('blog can be added', async () => {
 
 })
 
+test('blog without like field has 0 likes', async () => {
+  const newBlog = {
+    title: "Test Title",
+    author: "Test Author",
+    url: "Test Url"
+  }
+
+  await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', 'application/json; charset=utf-8')
+
+  const response = await api.get('/api/blogs')
+
+  expect(response.body[2].likes).toBe(0)
+})
+
+test('blog without title and url cannot be added', async () => {
+  const newBlog = {
+    author: "Test Author",
+    likes: "0"
+  }
+
+  await api.post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+})
+
 
 afterAll(() => {
   mongoose.connection.close()
