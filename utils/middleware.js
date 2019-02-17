@@ -1,3 +1,15 @@
+const jwt = require('jsonwebtoken')
+
+const setToken = (request, response, next) => {
+  const authorization = request.get('authorization')
+  console.log(authorization)
+  request.token = authorization && authorization.toLowerCase().startsWith('bearer ')
+    ? authorization.substring(7)
+    : null
+
+  next()
+}
+
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
@@ -15,6 +27,7 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
+  setToken,
   unknownEndpoint,
   errorHandler
 }
