@@ -15,28 +15,13 @@ blogsRouter.get('/', async (request, response, next) => {
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
 
-  //const user = await user.findById(body.userId)
-  const users = await User.find({})
-  const user = users[0]
-
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-    user: user._id
-  })
-
-  if (!blog.likes) blog.likes = 0
-
   try {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
     if (!request.token || !decodedToken.id) {
       return response.status(401).json({ error: 'token missing or invalid' })
     }
     
-    const users = await User.find({})
-    const user = users[0]
+    const user = await User.findById(decodedToken.id)
 
     const blog = new Blog({
       title: body.title,
@@ -59,6 +44,14 @@ blogsRouter.post('/', async (request, response, next) => {
 
 blogsRouter.delete('/:id', async (request, response, next) => {
   try {
+    const decodedToken = jwt.verify(request.token, process.env.SECRET)
+    const blog = await Blog.findById(request.params.id)
+    if (!request.token || !decodedToken.id) {
+      return response.status(401).json({ error: 'token missing or invalid' })
+    } else if (blog.user.toString() !== decodedToken.id) {
+      return response.status(403).json({error: 'method forbidden'})
+    }
+
     await Blog.findByIdAndDelete(request.params.id)
     response.status(204).end()
   } catch(error) {
