@@ -35,6 +35,29 @@ describe('favorite blog', () => {
   })
 })
 
+describe('writer with the most blogs', () => {
+  test('of one blog', () => {
+    const writer = {author: 'Edsger W. Dijkstra', blogs: 1}
+    expect(listHelper.mostBlogs(listWithOneBlog)).toEqual(writer)
+  })
+  test('of many blogs', () => {
+    const writer = {author: 'Robert C. Martin', blogs: 3}
+    expect(listHelper.mostBlogs(blogs)).toEqual(writer)
+  })
+})
+
+describe('writer with the most likes', () => {
+  test('of one blog', () => {
+    const writer = {author: 'Edsger W. Dijkstra', likes: 5}
+    expect(listHelper.mostLikes(listWithOneBlog)).toEqual(writer)
+  })
+
+  test('of many blogs',  () => {
+    const writer = {author: 'Edsger W. Dijkstra', likes: 17}
+    expect(listHelper.mostLikes(blogs)).toEqual(writer)
+  })
+})
+
 const listWithOneBlog = [
   {
     _id: '5a422aa71b54a676234d17f8',
